@@ -103,6 +103,17 @@ class Controller extends AbstractGuard
         $app = $event->getTarget();
         $eventManager = $app->getEventManager();
         $eventManager->setEventPrototype($event);
-        $eventManager->trigger(MvcEvent::EVENT_DISPATCH_ERROR, null, $event->getParams());
+
+        $results = $eventManager->trigger(
+            MvcEvent::EVENT_DISPATCH_ERROR,
+            null,
+            $event->getParams()
+        );
+        $return  = $results->last();
+        if (! $return) {
+            return $event->getResult();
+        }
+
+        return $return;
     }
 }
