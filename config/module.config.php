@@ -41,6 +41,9 @@ return [
         // Template name for the unauthorized strategy
         'template'              => 'error/403',
 
+        // Flag if cache should be enabled or not
+        'cache_enabled'         => true,
+
         // cache options have to be compatible with Laminas\Cache\StorageFactory::factory
         'cache_options'         => [
             'adapter'   => [
