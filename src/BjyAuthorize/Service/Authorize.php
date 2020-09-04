@@ -268,11 +268,15 @@ class Authorize
         $cacheKey = $cacheKeyGenerator();
 
         $success = false;
-        $this->acl = $cache->getItem($cacheKey, $success);
+        if ($this->config['cache_enabled']) {
+            $this->acl = $cache->getItem($cacheKey, $success);
+        }
 
         if (!($this->acl instanceof Acl) || !$success) {
             $this->loadAcl();
-            $cache->setItem($cacheKey, $this->acl);
+            if ($this->config['cache_enabled']) {
+                $cache->setItem($cacheKey, $this->acl);
+            }
         }
 
         $this->setIdentityProvider($this->serviceLocator->get('BjyAuthorize\Provider\Identity\ProviderInterface'));
