@@ -268,13 +268,14 @@ class Authorize
         $cacheKey = $cacheKeyGenerator();
 
         $success = false;
-        if ($this->config['cache_enabled']) {
+        $cacheEnabled = $this->config['cache_enabled'] ?? false;
+        if ($cacheEnabled) {
             $this->acl = $cache->getItem($cacheKey, $success);
         }
 
         if (!($this->acl instanceof Acl) || !$success) {
             $this->loadAcl();
-            if ($this->config['cache_enabled']) {
+            if ($cacheEnabled) {
                 $cache->setItem($cacheKey, $this->acl);
             }
         }
