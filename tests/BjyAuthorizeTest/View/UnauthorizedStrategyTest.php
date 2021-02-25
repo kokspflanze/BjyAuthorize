@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize)
  *
@@ -9,11 +10,14 @@
 namespace BjyAuthorizeTest\View;
 
 use BjyAuthorize\Exception\UnAuthorizedException;
-use \PHPUnit\Framework\TestCase;
 use BjyAuthorize\View\UnauthorizedStrategy;
+use Laminas\EventManager\EventManagerInterface;
 use Laminas\Http\Response;
 use Laminas\Mvc\Application;
+use Laminas\Mvc\MvcEvent;
+use Laminas\Stdlib\ResponseInterface;
 use Laminas\View\Model\ModelInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * UnauthorizedStrategyTest view strategy test
@@ -32,7 +36,7 @@ class UnauthorizedStrategyTest extends TestCase
      *
      * @covers \BjyAuthorize\View\UnauthorizedStrategy::__construct
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -45,23 +49,25 @@ class UnauthorizedStrategyTest extends TestCase
      */
     public function testAttachDetach()
     {
-        $eventManager = $this->getMockBuilder('Laminas\\EventManager\\EventManagerInterface')
+        $eventManager = $this->getMockBuilder(EventManagerInterface::class)
             ->getMock();
 
-        $callbackMock = $this->getMockBuilder(\stdClass::class)
-            ->setMethods(['__invoke'])
-            ->getMock();
+        $callbackDummy = new class {
+            public function __invoke()
+            {
+            }
+        };
 
         $eventManager
             ->expects($this->once())
             ->method('attach')
             ->with()
-            ->will($this->returnValue($callbackMock));
+            ->will($this->returnValue($callbackDummy));
         $this->strategy->attach($eventManager);
         $eventManager
             ->expects($this->once())
             ->method('detach')
-            ->with($callbackMock)
+            ->with($callbackDummy)
             ->will($this->returnValue(true));
         $this->strategy->detach($eventManager);
     }
@@ -83,8 +89,8 @@ class UnauthorizedStrategyTest extends TestCase
     public function testOnDispatchErrorWithGenericUnAuthorizedException()
     {
         $exception = $this->createMock(UnAuthorizedException::class);
-        $viewModel = $this->createMock('Laminas\\View\\Model\\ModelInterface');
-        $mvcEvent  = $this->createMock('Laminas\\Mvc\\MvcEvent');
+        $viewModel = $this->createMock(ModelInterface::class);
+        $mvcEvent  = $this->createMock(MvcEvent::class);
 
         $mvcEvent->expects($this->any())->method('getError')->will($this->returnValue(Application::ERROR_EXCEPTION));
         $mvcEvent->expects($this->any())->method('getViewModel')->will($this->returnValue($viewModel));
@@ -137,8 +143,8 @@ class UnauthorizedStrategyTest extends TestCase
     public function testIgnoresUnknownExceptions()
     {
         $exception = $this->createMock(\Exception::class);
-        $viewModel = $this->createMock('Laminas\\View\\Model\\ModelInterface');
-        $mvcEvent  = $this->createMock('Laminas\\Mvc\\MvcEvent');
+        $viewModel = $this->createMock(ModelInterface::class);
+        $mvcEvent  = $this->createMock(MvcEvent::class);
 
         $mvcEvent->expects($this->any())->method('getError')->will($this->returnValue(Application::ERROR_EXCEPTION));
         $mvcEvent->expects($this->any())->method('getViewModel')->will($this->returnValue($viewModel));
@@ -164,8 +170,8 @@ class UnauthorizedStrategyTest extends TestCase
      */
     public function testIgnoresUnknownErrors()
     {
-        $viewModel = $this->createMock('Laminas\\View\\Model\\ModelInterface');
-        $mvcEvent  = $this->createMock('Laminas\\Mvc\\MvcEvent');
+        $viewModel = $this->createMock(ModelInterface::class);
+        $mvcEvent  = $this->createMock(MvcEvent::class);
 
         $mvcEvent->expects($this->any())->method('getError')->will($this->returnValue('unknown'));
         $mvcEvent->expects($this->any())->method('getViewModel')->will($this->returnValue($viewModel));
@@ -181,9 +187,9 @@ class UnauthorizedStrategyTest extends TestCase
      */
     public function testIgnoresOnExistingResponse()
     {
-        $response = $this->createMock('Laminas\\Stdlib\\ResponseInterface');
-        $viewModel = $this->createMock('Laminas\\View\\Model\\ModelInterface');
-        $mvcEvent  = $this->createMock('Laminas\\Mvc\\MvcEvent');
+        $response = $this->createMock(ResponseInterface::class);
+        $viewModel = $this->createMock(ModelInterface::class);
+        $mvcEvent  = $this->createMock(MvcEvent::class);
 
         $mvcEvent->expects($this->any())->method('getResult')->will($this->returnValue($response));
         $mvcEvent->expects($this->any())->method('getViewModel')->will($this->returnValue($viewModel));
