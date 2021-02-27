@@ -1,6 +1,6 @@
 # BjyAuthorize - Acl security for Laminas / ZF3
 
-[![Build Status](https://travis-ci.org/kokspflanze/BjyAuthorize.png?branch=master)](https://travis-ci.org/kokspflanze/BjyAuthorize)
+[![Build Status](https://travis-ci.com/kokspflanze/BjyAuthorize.png?branch=master)](https://travis-ci.com/kokspflanze/BjyAuthorize)
 [![Total Downloads](https://poser.pugx.org/kokspflanze/bjy-authorize/downloads.png)](https://packagist.org/packages/kokspflanze/bjy-authorize)
 [![Latest Stable Version](https://poser.pugx.org/kokspflanze/bjy-authorize/v/stable.png)](https://packagist.org/packages/kokspflanze/bjy-authorize)
 
@@ -31,7 +31,7 @@ And here's how it would look like with BjyAuthorize enabled:
 ## Requirements
 
  * [Laminas](https://getlaminas.org/) / [Zend Framework 2](https://github.com/zendframework/zf2)
- * [LmcUser](https://github.com/Laminas-Commons/LmcUser) (optional)
+ * [LmcUser](https://github.com/LM-Commons/LmcUser) (optional)
 
 ## Installation
 
