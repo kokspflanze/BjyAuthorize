@@ -45,12 +45,11 @@ php composer.phar require kokspflanze/bjy-authorize
 
 ## Configuration
 
-Following steps apply if you want to use `ZfcUser` with `Laminas\Db`. If you want to use Doctrine ORM/ODM, you should
-also check the [doctrine documentation](https://github.com/bjyoungblood/BjyAuthorize/blob/master/docs/doctrine.md).
+Following steps apply if you want to use `LmcUser` with `Laminas\Db`. If you want to use Doctrine ORM/ODM, you should
+also check the [doctrine documentation](https://github.com/kokspflanze/BjyAuthorize/blob/master/docs/doctrine.md).
 
  1. Ensure that following modules are enabled in your `application.config.php` file in the this order:
-     * `ZfcBase`
-     * `ZfcUser`
+     * `LmcUser`
      * `BjyAuthorize`
  3. Import the SQL schema located in `./vendor/BjyAuthorize/data/schema.sql`.
  4. Create a `./config/autoload/bjyauthorize.global.php` file and fill it with
@@ -70,9 +69,9 @@ return [
         /* this module uses a meta-role that inherits from any roles that should
          * be applied to the active user. the identity provider tells us which
          * roles the "identity role" should inherit from.
-         * for ZfcUser, this will be your default identity provider
+         * for LmcUser, this will be your default identity provider
         */
-        'identity_provider' => \BjyAuthorize\Provider\Identity\ZfcUserZendDb::class,
+        'identity_provider' => \BjyAuthorize\Provider\Identity\LmcUserZendDb::class,
 
         /* If you only have a default role and an authenticated role, you can
          * use the 'AuthenticationIdentityProvider' to allow/restrict access

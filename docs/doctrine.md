@@ -4,18 +4,18 @@ If you wish to use Doctrine 2 ORM entities (ORM) or MongoDB ODM Documents (ODM),
 having your authentication identity implement either `Laminas\Permissions\Acl\Role\RoleInterface` or
 `BjyAuthorize\Provider\Role\ProviderInterface`.
 
-## BjyAuthorize, ZfcUser and ZfcUserDoctrineORM
+## BjyAuthorize, LmcUser and LmcUserDoctrineORM
 
-Here's some simple steps to do this specifically with `ZfcUserDoctrineORM`, though any authentication service
+Here's some simple steps to do this specifically with `LmcUserDoctrineORM`, though any authentication service
 will work too:
 
 
 ### Installation
 
-Install and enable `ZfcUser` and `ZfcUserDoctrineORM`:
+Install and enable `LmcUser` and `LmcUserDoctrineORM`:
 
 ```sh
-php composer.phar require zf-commons/zfc-user-doctrine-orm:0.1.*
+php composer.phar require lm-commons/lmc-user-doctrine-orm
 ```
 
 You will obviously need to enable all the involved modules
@@ -23,35 +23,35 @@ You will obviously need to enable all the involved modules
 ### Implement a `MyNamespace\User` and a `MyNamespace\Role` entities
 
 Implement a `MyNamespace\User` and a `MyNamespace\Role` entity.
-You can use the [`User.php.dist`](https://github.com/bjyoungblood/BjyAuthorize/blob/master/data/User.php.dist)
-and [`Role.php.dist`](https://github.com/bjyoungblood/BjyAuthorize/blob/master/data/Role.php.dist) files as blueprint.
+You can use the [`User.php.dist`](https://github.com/kokspflanze/BjyAuthorize/blob/master/data/User.php.dist)
+and [`Role.php.dist`](https://github.com/kokspflanze/BjyAuthorize/blob/master/data/Role.php.dist) files as blueprint.
 
 ### Configuration
 
-You will need to override the settings of `ZfcUserDoctrineORM` to use the entities you defined:
+You will need to override the settings of `LmcUserDoctrineORM` to use the entities you defined:
 
 ```php
 return array(
     'doctrine' => array(
         'driver' => array(
-            // overriding zfc-user-doctrine-orm's config
-            'zfcuser_entity' => array(
+            // overriding lmc-user-doctrine-orm's config
+            'lmcuser_entity' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'paths' => 'path/to/your/entities/dir',
             ),
 
             'orm_default' => array(
                 'drivers' => array(
-                    'MyNamespace' => 'zfcuser_entity',
+                    'MyNamespace' => 'lmcuser_entity',
                 ),
             ),
         ),
     ),
 
-    'zfcuser' => array(
-        // telling ZfcUser to use our own class
+    'lmcuser' => array(
+        // telling LmcUser to use our own class
         'user_entity_class'       => 'MyNamespace\User',
-        // telling ZfcUserDoctrineORM to skip the entities it defines
+        // telling LmcUserDoctrineORM to skip the entities it defines
         'enable_default_entities' => false,
     ),
 
