@@ -24,7 +24,7 @@ Following changes are required to upgrade:
    [documentation](https://github.com/bjyoungblood/BjyAuthorize/blob/master/docs/doctrine.md) instead
  * The `BjyAuthorize\Provider\Identity\AuthenticationDoctrineEntity` provider was removed, use the
    simpler `BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider` instead
- * The `BjyAuthorize\Provider\Identity\ZfcUserDoctrine` provider was removed, use the
+ * The `BjyAuthorize\Provider\Identity\LmcUserDoctrine` provider was removed, use the
    simpler `BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider` instead
  * Following methods were removed from the `BjyAuthorize\Provider\Identity\ProviderInterface`:
     * `getDefaultRole`
