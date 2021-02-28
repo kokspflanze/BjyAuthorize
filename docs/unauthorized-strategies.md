@@ -26,7 +26,7 @@ class Module
 
         $strategy = new RedirectionStrategy();
 
-        // eventually set the route name (default is ZfcUser's login route)
+        // eventually set the route name (default is LmcUser's login route)
         $strategy->setRedirectRoute('my/route/name');
 
         // eventually set the URI to be used for redirects

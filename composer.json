@@ -48,7 +48,8 @@
     },
     "suggests": {
         "laminas/laminas-developer-tools": "if you need to see current authorization details while developing",
-        "lm-commons/lmc-user":             "LmcUser provides a good default setup to get started with bjyauthorize"
+        "lm-commons/lmc-user":             "LmcUser provides a good default setup to get started with bjyauthorize",
+        "lm-commons/lmc-user-doctrine-orm": "To support Doctrine with LmcUser"
     },
     "autoload": {
         "psr-4": {
