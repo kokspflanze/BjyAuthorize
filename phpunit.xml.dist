@@ -21,5 +21,4 @@
   <testsuite name="BjyAuthorize tests">
     <directory>./test</directory>
   </testsuite>
-  <logging/>
 </phpunit>
