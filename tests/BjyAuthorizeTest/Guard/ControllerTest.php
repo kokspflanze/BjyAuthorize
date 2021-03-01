@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize)
  *
@@ -9,10 +10,17 @@
 namespace BjyAuthorizeTest\Guard;
 
 use BjyAuthorize\Exception\UnAuthorizedException;
-use \PHPUnit\Framework\TestCase;
 use BjyAuthorize\Guard\Controller;
-use Laminas\Console\Request;
+use BjyAuthorize\Service\Authorize;
+use Laminas\Console\Request as ConsoleRequest;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ResponseCollection;
+use Laminas\Http\Request as HttpRequest;
+use Laminas\Mvc\Application;
 use Laminas\Mvc\MvcEvent;
+use Laminas\Router\RouteMatch;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Controller Guard test
@@ -45,15 +53,17 @@ class ControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->serviceLocator  = $locator = $this->createMock('Laminas\\ServiceManager\\ServiceLocatorInterface');
-        $this->authorize = $authorize = $this->getMockBuilder('BjyAuthorize\\Service\\Authorize')->disableOriginalConstructor()->getMock();
+        $this->serviceLocator  = $locator = $this->createMock(ServiceLocatorInterface::class);
+        $this->authorize = $authorize = $this->getMockBuilder(Authorize::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->controllerGuard = new Controller([], $this->serviceLocator);
 
         $this
             ->serviceLocator
             ->expects($this->any())
             ->method('get')
-            ->with('BjyAuthorize\\Service\\Authorize')
+            ->with(Authorize::class)
             ->will($this->returnValue($authorize));
     }
 
@@ -63,24 +73,26 @@ class ControllerTest extends TestCase
      */
     public function testAttachDetach()
     {
-        $eventManager = $this->getMockBuilder('Laminas\\EventManager\\EventManagerInterface')
+        $eventManager = $this->getMockBuilder(EventManagerInterface::class)
             ->getMock();
 
-        $callbackMock = $this->getMockBuilder(\stdClass::class)
-            ->setMethods(['__invoke'])
-            ->getMock();
+        $callbackDummy = new class {
+            public function __invoke()
+            {
+            }
+        };
 
         $eventManager
             ->expects($this->once())
             ->method('attach')
             ->with()
-            ->will($this->returnValue($callbackMock));
+            ->will($this->returnValue($callbackDummy));
 
         $this->controllerGuard->attach($eventManager);
         $eventManager
             ->expects($this->once())
             ->method('detach')
-            ->with($callbackMock)
+            ->with($callbackDummy)
             ->will($this->returnValue(true));
         $this->controllerGuard->detach($eventManager);
     }
@@ -240,15 +252,14 @@ class ControllerTest extends TestCase
             ->will($this->returnValue(false));
         $event->expects($this->once())->method('setError')->with(Controller::ERROR);
 
-        $event->expects($this->at(5))->method('setParam')->with('identity', 'admin');
-        $event->expects($this->at(6))->method('setParam')->with('controller', 'test-controller');
-        $event->expects($this->at(7))->method('setParam')->with('action', 'test-action');
-        $event->expects($this->at(8))->method('setParam')->with(
-            'exception',
-            $this->isInstanceOf(UnAuthorizedException::class)
+        $event->expects($this->exactly(4))->method('setParam')->withConsecutive(
+            ['identity', 'admin'],
+            ['controller', 'test-controller'],
+            ['action', 'test-action'],
+            ['exception', $this->isInstanceOf(UnAuthorizedException::class)],
         );
 
-        $responseCollection = $this->getMockBuilder(\Laminas\EventManager\ResponseCollection::class)
+        $responseCollection = $this->getMockBuilder(ResponseCollection::class)
             ->getMock();
 
         $event->setName(MvcEvent::EVENT_DISPATCH_ERROR);
@@ -268,14 +279,13 @@ class ControllerTest extends TestCase
      */
     public function testOnDispatchWithInvalidResourceConsole()
     {
-        $event = $this->getMockBuilder('Laminas\\Mvc\\MvcEvent')
-            ->setMethods(['getRequest', 'getRouteMatch'])
-            ->getMock();
-        $routeMatch   = $this->getMockBuilder('Laminas\\Mvc\\Router\\RouteMatch')
-            ->setMethods(['getParam'])
+        $event = $this->getMockBuilder(MvcEvent::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $request = $this->getMockBuilder(Request::class)
+        $routeMatch = $this->getMockBuilder(RouteMatch::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $request = $this->getMockBuilder(ConsoleRequest::class)
             ->disableOriginalConstructor()
             ->getMock();
         $event->method('getRouteMatch')->willReturn($routeMatch);
@@ -293,20 +303,17 @@ class ControllerTest extends TestCase
      */
     private function createMvcEvent($controller = null, $action = null, $method = null)
     {
-        $eventManager = $this->getMockBuilder('Laminas\\EventManager\\EventManagerInterface')
+        $eventManager = $this->getMockBuilder(EventManagerInterface::class)
             ->getMock();
-        $application  = $this->getMockBuilder('Laminas\\Mvc\\Application')
-            ->setMethods(['getEventManager'])
+        $application = $this->getMockBuilder(Application::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $event        = $this->getMockBuilder('Laminas\\Mvc\\MvcEvent')
-            ->setMethods(['getTarget', 'getRouteMatch', 'getRequest', 'setError', 'setParam'])
+        $event = $this->getMockBuilder(MvcEvent::class)
             ->getMock();
-        $routeMatch   = $this->getMockBuilder('Laminas\\Mvc\\Router\\RouteMatch')
-            ->setMethods(['getParam'])
+        $routeMatch = $this->getMockBuilder(RouteMatch::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $request      = $this->getMockBuilder('Laminas\\Http\\Request')
+        $request = $this->getMockBuilder(HttpRequest::class)
             ->getMock();
 
         $event->expects($this->any())->method('getRouteMatch')->will($this->returnValue($routeMatch));

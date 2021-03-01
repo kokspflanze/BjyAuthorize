@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize)
  *
@@ -48,15 +49,16 @@ class ObjectRepositoryRoleProviderFactoryTest extends TestCase
             ->with($testClassName)
             ->will($this->returnValue($repository));
 
-        $container->expects($this->at(0))
+        $container->expects($this->exactly(2))
             ->method('get')
-            ->with('BjyAuthorize\Config')
-            ->will($this->returnValue($config));
-
-        $container->expects($this->at(1))
-            ->method('get')
-            ->with('doctrine.entitymanager.orm_default')
-            ->will($this->returnValue($entityManager));
+            ->withConsecutive(
+                ['BjyAuthorize\Config'],
+                ['doctrine.entitymanager.orm_default']
+            )
+            ->willReturn(
+                $this->returnValue($config),
+                $this->returnValue($entityManager)
+            );
 
         $this->assertInstanceOf(
             ObjectRepositoryProvider::class,

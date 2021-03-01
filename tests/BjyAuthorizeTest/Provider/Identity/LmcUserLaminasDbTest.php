@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BjyAuthorize Module (https://github.com/bjyoungblood/BjyAuthorize)
  *
@@ -8,8 +9,13 @@
 
 namespace BjyAuthorizeTest\Provider\Identity;
 
-use \PHPUnit\Framework\TestCase;
+use BjyAuthorize\Exception\InvalidRoleException;
 use BjyAuthorize\Provider\Identity\LmcUserLaminasDb;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\Db\TableGateway\TableGateway;
+use Laminas\Permissions\Acl\Role\RoleInterface;
+use LmcUser\Service\User;
+use PHPUnit\Framework\TestCase;
 
 /**
  * {@see \BjyAuthorize\Provider\Identity\LmcUserLaminasDb} test
@@ -43,11 +49,13 @@ class LmcUserLaminasDbTest extends TestCase
      *
      * @covers \BjyAuthorize\Provider\Identity\LmcUserLaminasDb::__construct
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->authService  = $this->createMock('Laminas\Authentication\AuthenticationService');
-        $this->userService  = $this->getMockBuilder('LmcUser\Service\User')->setMethods(['getAuthService'])->getMock();
-        $this->tableGateway = $this->getMockBuilder('Laminas\Db\TableGateway\TableGateway')->setMethods([])->disableOriginalConstructor()->getMock();
+        $this->authService = $this->createMock(AuthenticationService::class);
+        $this->userService = $this->getMockBuilder(User::class)->getMock();
+        $this->tableGateway = $this->getMockBuilder(TableGateway::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this
             ->userService
@@ -77,11 +85,11 @@ class LmcUserLaminasDbTest extends TestCase
         $this->provider->setDefaultRole('test');
         $this->assertSame('test', $this->provider->getDefaultRole());
 
-        $role = $this->createMock('Laminas\\Permissions\\Acl\\Role\\RoleInterface');
+        $role = $this->createMock(RoleInterface::class);
         $this->provider->setDefaultRole($role);
         $this->assertSame($role, $this->provider->getDefaultRole());
 
-        $this->expectException('BjyAuthorize\\Exception\\InvalidRoleException');
+        $this->expectException(InvalidRoleException::class);
         $this->provider->setDefaultRole(false);
     }
 
