@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<phpunit
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     colors="true"
     convertErrorsToExceptions="true"
     convertNoticesToExceptions="true"
@@ -8,13 +8,13 @@
     stopOnFailure="false"
     processIsolation="false"
     backupGlobals="false"
->
-    <testsuite name="BjyAuthorize tests">
-        <directory>./test</directory>
-    </testsuite>
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage includeUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+  </coverage>
+  <testsuite name="BjyAuthorize tests">
+    <directory>./test</directory>
+  </testsuite>
 </phpunit>
