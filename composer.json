@@ -53,12 +53,12 @@
     },
     "autoload": {
         "psr-4": {
-            "BjyAuthorize\\": "src/BjyAuthorize"
+            "BjyAuthorize\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "BjyAuthorizeTest\\": "tests/BjyAuthorizeTest"
+            "BjyAuthorizeTest\\": "test/"
         }
     },
     "scripts": {
