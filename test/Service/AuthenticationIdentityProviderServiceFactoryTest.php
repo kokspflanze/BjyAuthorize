@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 class AuthenticationIdentityProviderServiceFactoryTest extends TestCase
 {
     /**
-     * @covers BjyAuthorize\Service\AuthenticationIdentityProviderServiceFactory::createService
+     * @covers BjyAuthorize\Service\AuthenticationIdentityProviderServiceFactory::__invoke
      * @covers BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider::getDefaultRole
      * @covers BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider::getAuthenticatedRole
      */
