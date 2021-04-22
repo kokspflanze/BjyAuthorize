@@ -1,6 +1,5 @@
 <?php
 
-
 namespace BjyAuthorize\View\Helper;
 
 use BjyAuthorize\Service\Authorize;

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace BjyAuthorize\Controller\Plugin;
 
 use BjyAuthorize\Service\Authorize;
