@@ -2,6 +2,7 @@
 
 namespace BjyAuthorizeTest\Service;
 
+use BjyAuthorize\Acl\Role;
 use BjyAuthorize\Provider\Identity\ProviderInterface;
 use BjyAuthorize\Provider\Resource\Config as ResourceConfig;
 use BjyAuthorize\Provider\Role\Config as RoleConfig;
@@ -12,7 +13,9 @@ use BjyAuthorize\Service\RoleProvidersServiceFactory;
 use BjyAuthorize\Service\RuleProvidersServiceFactory;
 use Laminas\Cache\Storage\Adapter\Filesystem;
 use Laminas\Permissions\Acl\Acl;
+use Laminas\Permissions\Acl\Resource\GenericResource;
 use Laminas\ServiceManager\ServiceManager;
+use Laminas\Stdlib\ArrayObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -89,7 +92,7 @@ class AuthorizeTest extends TestCase
             ->method('getItem')
             ->will(
                 $this->returnCallback(
-                    function ($key, & $success) use ($acl) {
+                    function ($key, &$success) use ($acl) {
                         $success = true;
 
                         return $acl;
@@ -168,7 +171,7 @@ class AuthorizeTest extends TestCase
             ->method('getResources')
             ->will(
                 $this->returnValue(
-                    [new \Laminas\Permissions\Acl\Resource\GenericResource('test')]
+                    [new GenericResource('test')]
                 )
             );
 
@@ -200,7 +203,7 @@ class AuthorizeTest extends TestCase
             ->method('getResources')
             ->will(
                 $this->returnValue(
-                    new \Laminas\Stdlib\ArrayObject(['test'])
+                    new ArrayObject(['test'])
                 )
             );
 
@@ -220,7 +223,7 @@ class AuthorizeTest extends TestCase
      */
     public function testCanAddNonTraversableResourceToLoadResourceThrowsInvalidArgumentException()
     {
-        $this->expectException('\InvalidArgumentException');
+        $this->expectException(\InvalidArgumentException::class);
 
         $serviceManager = $this->serviceManager;
         $serviceManager->setAllowOverride(true);
@@ -262,7 +265,7 @@ class AuthorizeTest extends TestCase
             ->method('getRoles')
             ->will(
                 $this->returnValue(
-                    new \Laminas\Stdlib\ArrayObject([new \BjyAuthorize\Acl\Role('test')])
+                    new ArrayObject([new Role('test')])
                 )
             );
 

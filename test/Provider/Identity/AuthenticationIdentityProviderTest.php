@@ -2,8 +2,12 @@
 
 namespace BjyAuthorizeTest\Provider\Identity;
 
-use \PHPUnit\Framework\TestCase;
 use BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider;
+use Laminas\Authentication\AuthenticationService;
+use PHPUnit\Framework\TestCase;
+use Laminas\Permissions\Acl\Role\RoleInterface;
+use BjyAuthorize\Provider\Role\ProviderInterface;
+use BjyAuthorize\Exception\InvalidRoleException;
 
 /**
  * {@see \BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider} test
@@ -27,10 +31,10 @@ class AuthenticationIdentityProviderTest extends TestCase
      *
      * @covers \BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider::__construct
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->authService = $this->createMock('Laminas\Authentication\AuthenticationService');
-        $this->provider    = new AuthenticationIdentityProvider($this->authService);
+        $this->authService = $this->createMock(AuthenticationService::class);
+        $this->provider = new AuthenticationIdentityProvider($this->authService);
     }
 
     /**
@@ -66,7 +70,7 @@ class AuthenticationIdentityProviderTest extends TestCase
     {
         $this->authService->expects($this->once())->method('getIdentity')->will($this->returnValue('foo'));
 
-        $authorizedRole = $this->getMockBuilder('Laminas\Permissions\Acl\Role\RoleInterface')->setMethods(['getRoleId'])->getMock();
+        $authorizedRole = $this->getMockBuilder(RoleInterface::class)->getMock();
 
         $this->provider->setAuthenticatedRole($authorizedRole);
 
@@ -80,7 +84,7 @@ class AuthenticationIdentityProviderTest extends TestCase
     {
         $this->authService->expects($this->once())->method('getIdentity')->will($this->returnValue(null));
 
-        $defaultRole = $this->getMockBuilder('Laminas\Permissions\Acl\Role\RoleInterface')->setMethods(['getRoleId'])->getMock();
+        $defaultRole = $this->getMockBuilder(RoleInterface::class)->getMock();
 
         $this->provider->setDefaultRole($defaultRole);
 
@@ -92,9 +96,9 @@ class AuthenticationIdentityProviderTest extends TestCase
      */
     public function testGetIdentityRolesRetrievesRolesFromIdentityThatIsARoleProvider()
     {
-        $role1 = $this->createMock('Laminas\Permissions\Acl\Role\RoleInterface');
-        $role2 = $this->createMock('Laminas\Permissions\Acl\Role\RoleInterface');
-        $user  = $this->createMock('BjyAuthorize\Provider\Role\ProviderInterface');
+        $role1 = $this->createMock(RoleInterface::class);
+        $role2 = $this->createMock(RoleInterface::class);
+        $user = $this->createMock(ProviderInterface::class);
 
         $user->expects($this->once())
             ->method('getRoles')
@@ -116,7 +120,7 @@ class AuthenticationIdentityProviderTest extends TestCase
      */
     public function testGetIdentityRolesRetrievesIdentityThatIsARole()
     {
-        $user = $this->createMock('Laminas\Permissions\Acl\Role\RoleInterface');
+        $user = $this->createMock(RoleInterface::class);
 
         $this->authService->expects($this->any())
             ->method('getIdentity')
@@ -135,11 +139,11 @@ class AuthenticationIdentityProviderTest extends TestCase
         $this->provider->setAuthenticatedRole('test');
         $this->assertSame('test', $this->provider->getAuthenticatedRole());
 
-        $role = $this->createMock('Laminas\\Permissions\\Acl\\Role\\RoleInterface');
+        $role = $this->createMock(RoleInterface::class);
         $this->provider->setAuthenticatedRole($role);
         $this->assertSame($role, $this->provider->getAuthenticatedRole());
 
-        $this->expectException('BjyAuthorize\\Exception\\InvalidRoleException');
+        $this->expectException(InvalidRoleException::class);
         $this->provider->setAuthenticatedRole(false);
     }
 
@@ -153,11 +157,11 @@ class AuthenticationIdentityProviderTest extends TestCase
         $this->provider->setDefaultRole('test');
         $this->assertSame('test', $this->provider->getDefaultRole());
 
-        $role = $this->createMock('Laminas\\Permissions\\Acl\\Role\\RoleInterface');
+        $role = $this->createMock(RoleInterface::class);
         $this->provider->setDefaultRole($role);
         $this->assertSame($role, $this->provider->getDefaultRole());
 
-        $this->expectException('BjyAuthorize\\Exception\\InvalidRoleException');
+        $this->expectException(InvalidRoleException::class);
         $this->provider->setDefaultRole(false);
     }
 }

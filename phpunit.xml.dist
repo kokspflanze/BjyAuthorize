@@ -1,21 +1,24 @@
 <?xml version="1.0"?>
-<phpunit
-    bootstrap="./tests/Bootstrap.php"
-    colors="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    verbose="true"
-    stopOnFailure="false"
-    processIsolation="false"
-    backupGlobals="false"
->
-    <testsuite name="BjyAuthorize tests">
-        <directory>./tests/BjyAuthorizeTest</directory>
-    </testsuite>
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  colors="true"
+  convertErrorsToExceptions="true"
+  convertNoticesToExceptions="true"
+  convertWarningsToExceptions="true"
+  verbose="true"
+  stopOnFailure="false"
+  processIsolation="false"
+  backupGlobals="false"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage includeUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <report>
+      <clover outputFile="./build/logs/clover.xml"/>
+      <text outputFile="php://stdout"/>
+    </report>
+  </coverage>
+  <testsuite name="BjyAuthorize tests">
+    <directory>./test</directory>
+  </testsuite>
 </phpunit>

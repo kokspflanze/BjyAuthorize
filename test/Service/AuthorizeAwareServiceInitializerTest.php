@@ -55,7 +55,7 @@ class AuthorizeAwareServiceInitializerTest extends TestCase
     }
 
     /**
-     * @covers \BjyAuthorize\Service\AuthorizeAwareServiceInitializer::initialize
+     * @covers \BjyAuthorize\Service\AuthorizeAwareServiceInitializer::__invoke
      */
     public function testInitializeWithAuthorizeAwareObject()
     {
@@ -68,7 +68,7 @@ class AuthorizeAwareServiceInitializerTest extends TestCase
     }
 
     /**
-     * @covers \BjyAuthorize\Service\AuthorizeAwareServiceInitializer::initialize
+     * @covers \BjyAuthorize\Service\AuthorizeAwareServiceInitializer::__invoke
      */
     public function testInitializeWithSimpleObject()
     {
