@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @author Rob Allen <rob@akrabat.com>
- */
-
 namespace BjyAuthorize\View;
 
 use BjyAuthorize\Exception\UnAuthorizedException;
