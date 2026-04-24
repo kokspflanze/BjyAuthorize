@@ -1,62 +1,29 @@
 {
     "name":         "kokspflanze/bjy-authorize",
-    "description":  "Laminas\\Acl based firewall system for Laminas dispatch protection",
+    "description":  "Laminas\\Acl based firewall system for Mezzio dispatch protection",
     "type":         "library",
     "license":      "BSD-3-Clause",
     "homepage":     "https://github.com/kokspflanze/BjyAuthorize",
     "keywords": [
-        "laminas",
+        "mezzio",
         "acl",
-        "authorization",
-        "lmc-user"
-    ],
-    "authors": [
-        {
-            "name":     "Ben Youngblood",
-            "email":    "bx.youngblood@gmail.com",
-            "homepage": "http://bjyoungblood.com/",
-            "role":     "Developer"
-        },
-        {
-            "name":     "Marco Pivetta",
-            "email":    "ocramius@gmail.com",
-            "homepage": "http://ocramius.github.com/",
-            "role":     "Developer"
-        }
+        "authorization"
     ],
     "require": {
-        "php": "^7.3 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
-        "laminas/laminas-permissions-acl": "^2.8.0",
-        "laminas/laminas-mvc":             "^3.2.0",
-        "laminas/laminas-eventmanager":    "^3.4.0",
-        "laminas/laminas-servicemanager":  "^3.7.0",
-        "laminas/laminas-http":            "^2.15.0",
-        "laminas/laminas-view":            "^2.14.2",
-        "laminas/laminas-authentication":  "^2.8.0",
-        "laminas/laminas-cache":           "^2.13.2 || ^3.1.0"
+        "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+        "laminas/laminas-permissions-acl": "^2.18",
+        "laminas/laminas-servicemanager": "^3.24 || ^4.12",
+        "mezzio/mezzio-authentication": "^1.13",
+        "mezzio/mezzio-authorization": "^1.11",
+        "mezzio/mezzio-router": "^3.9 || ^4.2"
     },
     "require-dev": {
-        "phpunit/phpunit":                 "^9.5.9",
-        "laminas/laminas-coding-standard": "^2.3.0",
-        "laminas/laminas-db":              "^2.13.4",
-        "doctrine/persistence":            "^1.3.8 || ^2.2.2",
-        "laminas/laminas-developer-tools": "^2.1.1",
-        "lm-commons/lmc-user":             "^3.5.0",
-        "laminas/laminas-cache-storage-adapter-memory" : "@stable"
-    },
-    "suggests": {
-        "laminas/laminas-developer-tools":  "if you need to see current authorization details while developing",
-        "lm-commons/lmc-user":              "LmcUser provides a good default setup to get started with bjyauthorize",
-        "lm-commons/lmc-user-doctrine-orm": "To support Doctrine with LmcUser"
+        "phpunit/phpunit": "^9.5.9",
+        "doctrine/persistence": "^1.3.8 || ^2.2.2"
     },
     "autoload": {
         "psr-4": {
             "BjyAuthorize\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "BjyAuthorizeTest\\": "test/"
         }
     },
     "config": {
@@ -64,6 +31,11 @@
         "allow-plugins": {
             "composer/package-versions-deprecated": true,
             "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "extra": {
+        "laminas": {
+            "config-provider": "BjyAuthorize\\ConfigProvider"
         }
     },
     "scripts": {
