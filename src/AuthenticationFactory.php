@@ -14,6 +14,7 @@ class AuthenticationFactory
         return new AuthenticationMiddleware(
             $container->get(AuthenticationInterface::class),
             $container->get(Authorization::class),
+            $container->get(AuthorizationContext::class)
         );
     }
 

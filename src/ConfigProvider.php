@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace BjyAuthorize;
 
+use BjyAuthorize\View\Helper;
 use Laminas\Permissions\Acl\AclInterface;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 /**
  * The configuration provider for the App module
@@ -23,6 +25,16 @@ class ConfigProvider
     {
         return [
             'dependencies' => $this->getDependencies(),
+            'view_helpers' => [
+                'aliases' => [
+                    'isGranted' => Helper\IsGranted::class,
+                    'identity' => Helper\Identity::class,
+                ],
+                'factories' => [
+                    Helper\IsGranted::class => Helper\IsGrantedFactory::class,
+                    Helper\Identity::class => Helper\IdentityFactory::class,
+                ],
+            ],
         ];
     }
 
@@ -38,6 +50,7 @@ class ConfigProvider
                 AuthenticationMiddleware::class => AuthenticationFactory::class,
                 Authorization::class => AuthorizationFactory::class,
                 AclInterface::class => AclFactory::class,
+                AuthorizationContext::class => InvokableFactory::class,
             ],
         ];
     }

@@ -18,10 +18,18 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     protected AuthorizationInterface $acl;
 
-    public function __construct(AuthenticationInterface $auth, AuthorizationInterface $acl)
+    protected AuthorizationContext $context;
+
+    /**
+     * @param AuthenticationInterface $auth
+     * @param AuthorizationInterface $acl
+     * @param AuthorizationContext $context
+     */
+    public function __construct(AuthenticationInterface $auth, AuthorizationInterface $acl, AuthorizationContext $context)
     {
         $this->auth = $auth;
         $this->acl = $acl;
+        $this->context = $context;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -31,6 +39,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $roleList = ['guest'];
         if (null !== $user) {
             $request = $request->withAttribute(UserInterface::class, $user);
+            $this->context->setUser($user);
             $roleList = $user->getRoles();
         }
 
