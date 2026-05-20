@@ -7,7 +7,7 @@ use Mezzio\Authentication\UserInterface;
 
 class AuthorizationContext
 {
-    protected ?UserInterface $user;
+    protected ?UserInterface $user = null;
 
     public function getUser(): ?UserInterface
     {
