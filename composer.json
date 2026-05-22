@@ -15,7 +15,8 @@
         "laminas/laminas-servicemanager": "^3.24 || ^4.12",
         "mezzio/mezzio-authentication": "^1.13",
         "mezzio/mezzio-authorization": "^1.11",
-        "mezzio/mezzio-router": "^3.9 || ^4.2"
+        "mezzio/mezzio-router": "^3.9 || ^4.2",
+        "mezzio/mezzio-session": "^1.17"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5.9",

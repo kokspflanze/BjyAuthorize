@@ -7,6 +7,8 @@ namespace BjyAuthorize;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authorization\AuthorizationInterface;
+use Mezzio\Session\SessionInterface;
+use Mezzio\Session\SessionMiddleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -34,7 +36,16 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $user = $this->auth->authenticate($request);
+        $session = $request->getAttribute(SessionMiddleware::SESSION_ATTRIBUTE);
+        if (! $session instanceof SessionInterface) {
+            throw Exception\MissingSessionContainerException::create();
+        }
+
+        $user = null;
+
+        if ($session->has(UserInterface::class)) {
+            $user = $this->auth->authenticate($request);
+        }
 
         $roleList = ['guest'];
         if (null !== $user) {
