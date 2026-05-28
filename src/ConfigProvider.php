@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BjyAuthorize;
 
 use BjyAuthorize\View\Helper;
+use Doctrine\ORM\EntityManagerInterface;
 use Laminas\Permissions\Acl\AclInterface;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
@@ -33,6 +34,24 @@ class ConfigProvider
                 'factories' => [
                     Helper\IsGranted::class => Helper\IsGrantedFactory::class,
                     Helper\Identity::class => Helper\IdentityFactory::class,
+                ],
+            ],
+            'bjyauthorize' => [
+                // default role for unauthenticated users
+                'default_role'          => 'guest',
+
+                'role_providers' => [
+                    'type' => IdentityRoleInterface::TYPE_DOCTRINE,
+                    'options' => [
+                        'role_entity_class' => IdentityRoleInterface::class,
+                        'object_manager' => EntityManagerInterface::class,
+                    ],
+                ],
+                'rule_providers'        => [
+                    'allow' => [
+                    ],
+                    'deny' => [
+                    ],
                 ],
             ],
         ];

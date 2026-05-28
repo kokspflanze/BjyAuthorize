@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BjyAuthorize;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Laminas\Permissions\Acl\AclInterface;
 use Psr\Container\ContainerInterface;
 
@@ -13,11 +14,27 @@ class AclFactory
     {
         $config = $container->get('config')['bjyauthorize'];
 
-        $acl = new Acl();
-        $acl->addRole($config['default_role']);
+        if ($config['role_providers']['type'] !== IdentityRoleInterface::TYPE_DOCTRINE) {
+            throw new \UnexpectedValueException('role_providers type mismatch ' . $config['role_providers']['type']);
+        }
 
-        foreach ($config['role_providers'] as $role) {
-            $acl->addRole($role);
+        /** @var EntityManagerInterface $entityManager */
+        $entityManager = $container->get($config['role_providers']['options']['object_manager']);
+
+        $repository = $entityManager->getRepository($config['role_providers']['options']['role_entity_class']);
+
+
+        $acl = new Acl();
+        $roleIdMapping = [];
+
+        /** @var IdentityRoleInterface $role */
+        foreach ($repository->findAll() as $role) {
+            $roleIdMapping[$role->getId()] = $role->getRoleId();
+        }
+
+        /** @var IdentityRoleInterface $role */
+        foreach ($repository->findAll() as $role) {
+            $acl->addRole($role->getRoleId(), $roleIdMapping[$role->getParentId()] ?? null);
         }
 
         foreach ($config['rule_providers']['allow'] as $rule) {
