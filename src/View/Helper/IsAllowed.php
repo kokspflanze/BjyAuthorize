@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BjyAuthorize\View\Helper;
 
+use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
 use BjyAuthorize\Service\Authorize;
 use Laminas\View\Helper\AbstractHelper;
 
@@ -23,10 +24,11 @@ class IsAllowed extends AbstractHelper
     /**
      * @param mixed $resource
      * @param mixed|null $privilege
+     * @param RoleProviderInterface|null $roleProvider
      * @return bool
      */
-    public function __invoke($resource, $privilege = null)
+    public function __invoke($resource, $privilege = null, ?RoleProviderInterface $roleProvider = null)
     {
-        return $this->authorizeService->isAllowed($resource, $privilege);
+        return $this->authorizeService->isAllowed($resource, $privilege, $roleProvider);
     }
 }

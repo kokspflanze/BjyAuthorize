@@ -8,6 +8,7 @@ use BjyAuthorize\Guard\GuardInterface;
 use BjyAuthorize\Provider\Identity\ProviderInterface as IdentityProvider;
 use BjyAuthorize\Provider\Resource\ProviderInterface as ResourceProvider;
 use BjyAuthorize\Provider\Role\ProviderInterface as RoleProvider;
+use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
 use BjyAuthorize\Provider\Rule\ProviderInterface as RuleProvider;
 use Closure;
 use Interop\Container\ContainerInterface;
@@ -203,18 +204,35 @@ class Authorize
 
     /**
      * @param string|ResourceInterface $resource
-     * @param string $privilege
+     * @param null $privilege
+     * @param RoleProviderInterface|null $roleProvider
      * @return bool
      */
-    public function isAllowed($resource, $privilege = null)
+    public function isAllowed($resource, $privilege = null, ?RoleProviderInterface $roleProvider = null)
     {
         $this->loaded && $this->loaded->__invoke();
 
-        try {
-            return $this->acl->isAllowed($this->getIdentity(), $resource, $privilege);
-        } catch (InvalidArgumentException $e) {
-            return false;
+        $roleList = [$this->getIdentity()];
+
+        if ($roleProvider !== null) {
+            $roleList = $roleProvider->getRoles();
         }
+
+        $result = false;
+
+        foreach ($roleList as $role) {
+            try {
+                $isAllowed = $this->acl->isAllowed($role, $resource, $privilege);
+                if ($isAllowed) {
+                    $result = true;
+                    break;
+                }
+            } catch (InvalidArgumentException $e) {
+                break;
+            }
+        }
+
+        return $result;
     }
 
     /**
